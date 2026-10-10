@@ -1,0 +1,243 @@
+{
+  "timestamp_utc": "2026-10-10T10:42:39+00:00",
+  "git_commit": null,
+  "python_version": "3.12.10",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "torch_version": "2.14.1+cu126",
+  "torchvision_version": "0.29.1+cu126",
+  "cuda_available": true,
+  "cuda_version": "12.6",
+  "device": {
+    "device": "cuda",
+    "cuda_available": true,
+    "gpu_name": "NVIDIA GeForce RTX 3050 Ti Laptop GPU",
+    "vram_gb": 4.0
+  },
+  "seed": 42,
+  "dataset": {
+    "name": "CIFAR-10",
+    "train_val_split": "45000/5000 (seed 42)",
+    "test_size": 10000,
+    "normalization": {
+      "mean": [
+        0.4914,
+        0.4822,
+        0.4465
+      ],
+      "std": [
+        0.247,
+        0.2435,
+        0.2616
+      ],
+      "input_range": [
+        0.0,
+        1.0
+      ]
+    }
+  },
+  "model": {
+    "arch": "resnet18",
+    "num_classes": 10
+  },
+  "hyperparameters": {
+    "baseline_train": {
+      "epochs": 20,
+      "batch_size": 128,
+      "optimizer": "adamw",
+      "lr": 0.001,
+      "weight_decay": 0.0005,
+      "scheduler": "cosine",
+      "amp": true,
+      "early_stop_patience": 0,
+      "augment": true,
+      "checkpoint": "checkpoints/baseline_best.pth"
+    },
+    "adversarial_train": {
+      "method": "pgd",
+      "mode": "from_scratch",
+      "epsilon": 0.03,
+      "steps": 5,
+      "alpha_ratio": 0.5,
+      "random_start": true,
+      "adv_ratio": 1.0,
+      "clean_weight": 0.0,
+      "epochs": 20,
+      "batch_size": 128,
+      "optimizer": "adamw",
+      "lr": 0.001,
+      "weight_decay": 0.0005,
+      "scheduler": "cosine",
+      "amp": true,
+      "early_stop_patience": 0,
+      "checkpoint": "checkpoints/advtrain_pgd_best.pth"
+    }
+  },
+  "checkpoints": {
+    "baseline": {
+      "path": "D:\\ATTTM\\checkpoints\\baseline_best.pth",
+      "size_mb": 42.71,
+      "sha256": "d5b4adf33f4760a4b2d6bc22dfbf246cad3208a587051802cf6bb966def9e612",
+      "training": "baseline_clean_from_scratch",
+      "best_epoch": 20,
+      "select_key": "val_acc",
+      "train_time_sec_until_best": 536.761376619339,
+      "train_config": {
+        "epochs": 20,
+        "batch_size": 128,
+        "optimizer": "adamw",
+        "lr": 0.001,
+        "weight_decay": 0.0005,
+        "scheduler": "cosine",
+        "amp": true,
+        "early_stop_patience": 0,
+        "augment": true,
+        "checkpoint": "checkpoints/baseline_best.pth",
+        "log_dir": "logs/baseline"
+      },
+      "seed": 42,
+      "arch": "resnet18",
+      "normalization": {
+        "mean": [
+          0.4914,
+          0.4822,
+          0.4465
+        ],
+        "std": [
+          0.247,
+          0.2435,
+          0.2616
+        ],
+        "input_range": [
+          0.0,
+          1.0
+        ]
+      }
+    },
+    "advtrain_pgd": {
+      "path": "D:\\ATTTM\\checkpoints\\advtrain_pgd_best.pth",
+      "size_mb": 42.71,
+      "sha256": "3d8be995a304aaa7b6764caa800c59942fd4fbe1827f754142b546d36beb8960",
+      "training": "adversarial_pgd_from_scratch",
+      "best_epoch": 19,
+      "select_key": "val_acc",
+      "train_time_sec_until_best": 2143.460478067398,
+      "train_config": {
+        "method": "pgd",
+        "mode": "from_scratch",
+        "epsilon": 0.03,
+        "steps": 5,
+        "alpha_ratio": 0.5,
+        "random_start": true,
+        "adv_ratio": 1.0,
+        "clean_weight": 0.0,
+        "epochs": 20,
+        "batch_size": 128,
+        "optimizer": "adamw",
+        "lr": 0.001,
+        "weight_decay": 0.0005,
+        "scheduler": "cosine",
+        "amp": true,
+        "early_stop_patience": 0,
+        "checkpoint": "checkpoints/advtrain_pgd_best.pth",
+        "log_dir": "logs/advtrain_pgd"
+      },
+      "adv_config": {
+        "method": "pgd",
+        "epsilon": 0.03,
+        "steps": 5,
+        "alpha_ratio": 0.5,
+        "random_start": true,
+        "adv_ratio": 1.0,
+        "clean_weight": 0.0
+      },
+      "init_checkpoint": null,
+      "seed": 42,
+      "arch": "resnet18",
+      "normalization": {
+        "mean": [
+          0.4914,
+          0.4822,
+          0.4465
+        ],
+        "std": [
+          0.247,
+          0.2435,
+          0.2616
+        ],
+        "input_range": [
+          0.0,
+          1.0
+        ]
+      }
+    }
+  },
+  "attack_configs": {
+    "fgsm": {
+      "epsilons": [
+        0.0,
+        0.01,
+        0.03,
+        0.05,
+        0.1
+      ]
+    },
+    "pgd": {
+      "epsilons": [
+        0.01,
+        0.03,
+        0.05
+      ],
+      "steps": 10,
+      "alpha_ratio": 0.25,
+      "random_start": true
+    }
+  },
+  "defense_configs": {
+    "gaussian_blur": {
+      "kernel_sizes": [
+        3,
+        5
+      ],
+      "sigmas": [
+        0.5,
+        1.0
+      ]
+    },
+    "adversarial_training": {
+      "method": "pgd",
+      "mode": "from_scratch",
+      "epsilon": 0.03,
+      "steps": 5,
+      "alpha_ratio": 0.5,
+      "random_start": true,
+      "adv_ratio": 1.0,
+      "clean_weight": 0.0
+    }
+  },
+  "evaluation": {
+    "split": "CIFAR-10 test",
+    "epsilon_space": "pixel [0, 1], L_inf",
+    "batch_size": 256,
+    "max_samples": null,
+    "n_samples_evaluated": [
+      10000
+    ],
+    "results_rows": 76,
+    "models_evaluated": [
+      "advtrain_pgd",
+      "baseline",
+      "baseline+gaussian_blur_k3_s0.5",
+      "baseline+gaussian_blur_k3_s1",
+      "baseline+gaussian_blur_k5_s0.5",
+      "baseline+gaussian_blur_k5_s1"
+    ]
+  },
+  "report": {
+    "main_epsilon": 0.03,
+    "tables": [
+      "D:\\ATTTM\\results\\tables\\attack_table.csv",
+      "D:\\ATTTM\\results\\tables\\defense_table.csv"
+    ],
+    "not_run": []
+  }
+}

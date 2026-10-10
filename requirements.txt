@@ -1,0 +1,14 @@
+# Cài PyTorch bản CUDA trước (xem README), ví dụ:
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu126
+# Nếu không có GPU: pip install torch torchvision
+torch>=2.2
+torchvision>=0.17
+numpy
+pandas
+matplotlib
+pillow
+tqdm
+pyyaml
+pytest
+tensorboard
+streamlit

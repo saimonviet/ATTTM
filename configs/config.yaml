@@ -1,0 +1,77 @@
+# Cấu hình mặc định (tối ưu cho GPU 4 GB VRAM, ví dụ RTX 3050 Ti).
+# Mọi tham số có thể ghi đè bằng CLI của từng script.
+seed: 42
+device: auto            # auto | cpu | cuda
+num_workers: 2
+
+data:
+  root: data
+  val_size: 5000        # tách từ 50k train; test set (10k) KHÔNG dùng để train/chọn checkpoint
+  # Thống kê chuẩn CIFAR-10. Normalize nằm TRONG model, đầu vào luôn là pixel [0, 1].
+  mean: [0.4914, 0.4822, 0.4465]
+  std: [0.2470, 0.2435, 0.2616]
+  input_range: [0.0, 1.0]
+
+model:
+  arch: resnet18        # ResNet18 cho CIFAR (conv1 3x3, bỏ maxpool)
+  num_classes: 10
+
+train:                  # baseline
+  epochs: 20
+  batch_size: 128
+  optimizer: adamw      # adamw | sgd
+  lr: 0.001
+  weight_decay: 0.0005
+  scheduler: cosine     # cosine | none
+  amp: true             # mixed precision (chỉ có tác dụng trên CUDA)
+  early_stop_patience: 0   # 0 = tắt
+  augment: true
+  checkpoint: checkpoints/baseline_best.pth   # log lưu ở logs/<tên checkpoint>/history.csv
+
+attacks:
+  fgsm:
+    epsilons: [0.0, 0.01, 0.03, 0.05, 0.1]
+  pgd:
+    epsilons: [0.01, 0.03, 0.05]
+    steps: 10
+    alpha_ratio: 0.25     # alpha = epsilon * alpha_ratio
+    random_start: true
+
+adv_train:
+  method: pgd           # pgd | fgsm
+  mode: from_scratch    # from_scratch | finetune (finetune: khởi tạo từ baseline, ghi rõ trong báo cáo)
+  epsilon: 0.03
+  steps: 5
+  alpha_ratio: 0.5      # alpha = eps * 0.5 với 5 bước (đủ để chạm biên eps)
+  random_start: true
+  adv_ratio: 1.0        # tỉ lệ mẫu trong batch được tấn công
+  clean_weight: 0.0     # lambda: L = lambda*L_clean + (1-lambda)*L_adv ; 0 = adversarial-only
+  epochs: 20
+  batch_size: 128
+  optimizer: adamw
+  lr: 0.001
+  weight_decay: 0.0005
+  scheduler: cosine
+  amp: true
+  early_stop_patience: 0
+  checkpoint: checkpoints/advtrain_pgd_best.pth
+
+defense:
+  gaussian_blur:
+    kernel_sizes: [3, 5]
+    sigmas: [0.5, 1.0]
+
+eval:
+  batch_size: 256       # batch 1000 với PGD vượt 4 GB VRAM -> rất chậm; 256 dùng ~1.4 GB
+  max_samples: null     # null = toàn bộ test set 10k
+
+# Các model được đưa vào so sánh cuối (tên dùng trong bảng kết quả -> checkpoint)
+models:
+  baseline: checkpoints/baseline_best.pth
+  advtrain_pgd: checkpoints/advtrain_pgd_best.pth
+
+report:
+  main_epsilon: 0.03    # epsilon dùng cho cột FGSM/PGD accuracy trong bảng defense
+
+paths:
+  results: results
